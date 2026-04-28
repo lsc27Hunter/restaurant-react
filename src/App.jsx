@@ -47,12 +47,12 @@ export default function App() {
       <section>
         <h2>Gallery</h2>
         <div className="gallery">
-          <img src="public/food1.jpg" />
-          <img src="public/food2.jpg" />
-          <img src="public/food3.jpg" />
-          <img src="public/food4.jpg" />
-          <img src="public/food5.jpg" />
-          <img src="public/food6.jpg" />
+          <img src="/food1.jpg" />
+          <img src="/food2.jpg" />
+          <img src="/food3.jpg" />
+          <img src="/food4.jpg" />
+          <img src="/food5.jpg" />
+          <img src="/food6.jpg" />
         </div>
       </section>
 

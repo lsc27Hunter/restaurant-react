@@ -62,7 +62,7 @@ button:hover {
 }
 
 .hero {
-  background: url("public/food7.jpg") center/cover;
+  background: url("/food7.jpg") center/cover;
   height: 300px;
   display: flex;
   align-items: center;
