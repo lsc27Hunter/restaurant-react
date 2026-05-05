@@ -12,9 +12,32 @@ export default function App() {
 
   const [cart, setCart] = useState([]);
 
-  function addToCart(item) {
-    setCart([...cart, item]);
-  }
+function addToCart(item) {
+  setCart(prev => {
+    const existing = prev.find(i => i.name === item.name);
+
+    if (existing) {
+      return prev.map(i =>
+        i.name === item.name
+          ? { ...i, quantity: i.quantity + 1 }
+          : i
+      );
+    }
+
+    return [...prev, { ...item, quantity: 1 }];
+  });
+}
+  function removeFromCart(name) {
+  setCart(prev =>
+    prev
+      .map(item =>
+        item.name === name
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+      .filter(item => item.quantity > 0)
+  );
+}
 
   const total = cart.reduce((sum, i) => sum + i.price, 0);
 
@@ -84,17 +107,28 @@ export default function App() {
       </section>
 
       {/* CART */}
-      <section className="cart">
-        <h2>Cart</h2>
+<section className="cart">
+  <h2>Cart</h2>
 
-        {cart.map((item, i) => (
-          <p key={i}>
-            {item.name} - ${item.price}
-          </p>
-        ))}
+  {cart.map((item) => (
+    <div key={item.name}>
+      <p>
+        {item.name} x {item.quantity} - ${item.price * item.quantity}
+      </p>
 
-        <h3>Total: ${total}</h3>
-      </section>
+      <button onClick={() => removeFromCart(item.name)}>
+        Remove
+      </button>
+    </div>
+  ))}
+
+  <h3>Total: $
+    {cart.reduce(
+      (sum, i) => sum + i.price * i.quantity,
+      0
+    )}
+  </h3>
+</section>
 
       {/* FOOTER */}
       <footer>
