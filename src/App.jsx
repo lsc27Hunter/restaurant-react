@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 export default function App() {
-  const menuItems = [
-    { name: "Bruschetta", price: 13 },
-    { name: "Margherita Pizza", price: 18 },
-    { name: "Spaghetti Pomodoro", price: 16 },
-    { name: "Grilled Tagliata", price: 22 },
-    { name: "Tiramisu", price: 8 }
-  ];
+const [menuItems, setMenuItems] = useState([]);
+
+
+useEffect(() => {
+  fetch("http://localhost:5001/api/menu")
+    .then(res => res.json())
+    .then(data => setMenuItems(data));
+}, []);
 
   const [cart, setCart] = useState([]);
 
@@ -23,7 +24,6 @@ function addToCart(item) {
           : i
       );
     }
-
     return [...prev, { ...item, quantity: 1 }];
   });
 }
@@ -39,8 +39,25 @@ function addToCart(item) {
   );
 }
 
-  const total = cart.reduce((sum, i) => sum + i.price, 0);
+function placeOrder() {
+  fetch("http://localhost:5001/api/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      items: cart,
+      total: total
+    })
+  })
+    .then(res => res.json())
+    .then(() => {
+      alert("Order placed!");
+      setCart([]);
+    });
+}
 
+const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return (
     <div className="container">
 
@@ -106,7 +123,6 @@ function addToCart(item) {
         </form>
       </section>
 
-      {/* CART */}
 <section className="cart">
   <h2>Cart</h2>
 
@@ -122,14 +138,16 @@ function addToCart(item) {
     </div>
   ))}
 
-  <h3>Total: $
-    {cart.reduce(
-      (sum, i) => sum + i.price * i.quantity,
-      0
-    )}
+  <h3>
+    Total: ${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}
   </h3>
-</section>
 
+  {cart.length > 0 && (
+    <button onClick={placeOrder}>
+      Place Order
+    </button>
+  )}
+</section>
       {/* FOOTER */}
       <footer>
         <p>Instagram | Facebook | Hours: 10am - 10pm</p>
